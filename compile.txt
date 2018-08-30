@@ -1,0 +1,2 @@
+gcc NOME DO ARQUIVO -o NOME DO EXECUTAVEL(sem exe pfvr n passa vergonha)
+./NOME DO EXECUTALVEL <nome do arq de entrada >nome do arq de saida
