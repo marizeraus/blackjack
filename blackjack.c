@@ -31,9 +31,9 @@ int valor_carta(carta x){
 }
 
 
-int compra_cartas(baralho cartas, int *cont){ //
-    carta comprada = cartas.deck[*cont];
-    *cont=*cont+1;
+int compra_cartas(baralho cartas){ //
+    carta comprada = cartas.deck[cartas.cont];
+    printf("Carta: %d-%c \n", comprada.valor, comprada.naipe);
     return comprada.valor;
 }
 
@@ -45,12 +45,12 @@ int main(int argc, char *argv[])
     player jogador;
     jogador.ganhos=0;
 
-    //declaração e leitura das cartas:
+    //declaraï¿½ï¿½o e leitura das cartas:
     baralho cartas;
     cartas.cont=0;
     for (int i=0;i<NUM_CARTAS;i++){
-        char entrada[2];
-        scanf("%s", entrada);
+        char entrada[3];
+        scanf(" %s", entrada);
         cartas.deck[i].nome = entrada[0];
         cartas.deck[i].naipe = entrada[1];
         cartas.deck[i].valor=valor_carta(cartas.deck[i]);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     printf("Digite seu nome: \n");
     scanf("%s", jogador.nome);
 
-    while (jogando=='S'){ //começa aqui o jogo
+    while (jogando=='S'){ //comeï¿½a aqui o jogo
 
         //declaracao das variaveis que serao usadas no jogo
         char continuar = 'S';
@@ -68,23 +68,63 @@ int main(int argc, char *argv[])
         dealer.pontos = 0;
         dealer.ganhos = 0;
         char turn='P';
+        char continua;
 
         printf("Digite sua aposta: \n");
         scanf("%d", &aposta);
-        //hora de jogar
-        //pensar em um como fazer o modo de jogo
-        //baixar uma vm de ubuntu no pc pra usar isso daqui
-        printf("NOME: %s APOSTA: %d",jogador.nome, aposta);
+        jogador.ganhos-=aposta;
+        printf("Jogador\n");
+
+        while (turn=='P'){
+            jogador.pontos+=compra_cartas(cartas);
+            cartas.cont++;
+            if (jogador.pontos==21) turn='W';
+            else if (jogador.pontos>21) turn='L';
+            else{
+              printf("Deseja continuar? (S/N) \n");
+              char contin;
+              scanf(" %c", &contin);
+              if (contin!='S'){
+                turn='D';
+              }
+
+            }
+        }
+
+        printf("Dealer \n");
+
+        while (turn=='D'){
+            if (dealer.pontos<17){
+              dealer.pontos+=compra_cartas(cartas);
+              cartas.cont++;
+            }
+            else if (dealer.pontos>21) turn='W';
+            else if (dealer.pontos==21) turn = 'L';
+            else{
+              if (dealer.pontos>jogador.pontos) turn ='L';
+              else turn='W';
+            }
+        }
+
+        if (turn=='W'){
+          printf("Voce ganhou!\n");
+          jogador.ganhos+=2*aposta;
+        }
+        else if (turn=='L'){
+          printf("Voce perdeu!\n");
+          if (jogador.ganhos>0) jogador.ganhos-=aposta;
+        }
+
         printf("Deseja fazer nova aposta (S/N): \n");
-        scanf("%c", &jogando);
+        scanf(" %c", &jogando);
 
         }
+        printf("%s, voce ganhou %d reais.",jogador.nome, jogador.ganhos);
 
 
     /*for (int i=0;i<52;i++){
-        TESTE PRA VER SE AS CARTAS TÃO
         printf("Carta: %d-%c \n", cartas.deck[i].valor, cartas.deck[i].naipe);
-    }*/
-    
+    }
+    */
     return 0;
 }
