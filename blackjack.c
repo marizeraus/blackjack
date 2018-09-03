@@ -25,8 +25,8 @@ typedef struct Player{
 
 
 int valor_carta(carta x){
-    if (x.nome=='A') return 1;
-    else if (x.nome=='J'|| x.nome=='K' || x.nome=='Q' || x.nome=='0') return 10;
+    if (x.nome=='A') return 1; //ás
+    else if (x.nome=='J'|| x.nome=='K' || x.nome=='Q' || x.nome=='0') return 10; //cartas com valor 10
     return x.nome-48; //convertendo o char para inteiro, baseado na tabela ascii q tem o 0 como 48
 }
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     player jogador;
     jogador.ganhos=0;
 
-    //declara��o e leitura das cartas:
+    //declaracao e leitura das cartas:
     baralho cartas;
     cartas.cont=0;
     for (int i=0;i<NUM_CARTAS;i++){
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     printf("Digite seu nome: \n");
     scanf("%s", jogador.nome);
 
-    while (jogando=='S'){ //come�a aqui o jogo
+    while (jogando=='S'){ //comeca o jogo
 
         //declaracao das variaveis que serao usadas no jogo
         char continuar = 'S';
@@ -75,16 +75,16 @@ int main(int argc, char *argv[])
         jogador.ganhos-=aposta;
         printf("Jogador\n");
 
-        while (turn=='P'){
+        while (turn=='P'){ //rodada do jogador
             jogador.pontos+=compra_cartas(cartas);
             cartas.cont++;
-            if (jogador.pontos==21) turn='W';
-            else if (jogador.pontos>21) turn='L';
+            if (jogador.pontos==21) turn='W'; //ganhou a partida
+            else if (jogador.pontos>21) turn='L'; //perdeu automaticamente
             else{
               printf("Deseja continuar? (S/N) \n");
               char contin;
               scanf(" %c", &contin);
-              if (contin!='S'){
+              if (contin!='S'){ //nao quer continuar, turno do dealer
                 turn='D';
               }
 
@@ -94,37 +94,34 @@ int main(int argc, char *argv[])
         printf("Dealer \n");
 
         while (turn=='D'){
-            if (dealer.pontos<17){
+            if (dealer.pontos<17){ //para de comprar assim que tiver 17 pontos os mais
               dealer.pontos+=compra_cartas(cartas);
               cartas.cont++;
             }
-            else if (dealer.pontos>21) turn='W';
-            else if (dealer.pontos==21) turn = 'L';
+            else if (dealer.pontos>21) turn='W'; //se tiver mais que 21, jogador ganha
+            else if (dealer.pontos==21) turn = 'L'; //se chegar a 21, ganhou o jogo
             else{
-              if (dealer.pontos>jogador.pontos) turn ='L';
-              else turn='W';
+              if (dealer.pontos>jogador.pontos) turn ='L'; //se fizer mais pontos, dealer ganha
+              else turn='W'; //empate, jogador ganha
             }
         }
 
         if (turn=='W'){
           printf("Voce ganhou!\n");
-          jogador.ganhos+=2*aposta;
+          jogador.ganhos+=2*aposta; //ganhando, a aposta dobra
         }
         else if (turn=='L'){
           printf("Voce perdeu!\n");
-          if (jogador.ganhos>0) jogador.ganhos-=aposta;
+          if (jogador.ganhos>0) jogador.ganhos-=aposta; //se ja tiver ganho alguma coisa, desconta as perdas do ganho
         }
 
         printf("Deseja fazer nova aposta (S/N): \n");
         scanf(" %c", &jogando);
 
         }
+        if (jogador.ganhos<0) jogador.ganhos=0;
         printf("%s, voce ganhou %d reais.",jogador.nome, jogador.ganhos);
 
-
-    /*for (int i=0;i<52;i++){
-        printf("Carta: %d-%c \n", cartas.deck[i].valor, cartas.deck[i].naipe);
-    }
-    */
+        
     return 0;
 }
